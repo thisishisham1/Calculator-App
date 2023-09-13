@@ -21,7 +21,7 @@ val DarkColorScheme = darkColorScheme(
     onPrimary = textDark
 )
 
-private val LightColorScheme = lightColorScheme(
+val LightColorScheme = lightColorScheme(
     surface = backgroundLight,
     primary = buttonLowLight,
     onPrimary = textLight
