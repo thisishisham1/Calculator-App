@@ -6,6 +6,7 @@ import androidx.compose.ui.graphics.Color
 val backgroundLight = Color(0xffF1F2F3)
 val textLight = Color(0xff000000)
 val buttonHighLight = Color(0xff4B5EFC)
+val buttonMediumLight=Color(0xffD2D3DA)
 val buttonLowLight = Color(0xffFFFFFF)
 
 //Dark color
