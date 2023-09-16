@@ -8,19 +8,21 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
@@ -35,6 +37,9 @@ import com.example.calculatorapp.ui.theme.buttonMediumDark
 import com.example.calculatorapp.ui.theme.buttonMediumLight
 import com.example.calculatorapp.ui.theme.textDark
 import com.example.calculatorapp.ui.theme.textLight
+import org.mariuszgromada.math.mxparser.Expression
+import java.math.RoundingMode
+import java.text.DecimalFormat
 
 @Composable
 fun HomeCalculator(modifier: Modifier, isDark: Boolean, themeUpdated: (bool: Boolean) -> Unit) {
@@ -44,9 +49,15 @@ fun HomeCalculator(modifier: Modifier, isDark: Boolean, themeUpdated: (bool: Boo
     val rowModifier = Modifier
         .fillMaxWidth()
         .height(screenWidth / 4)
-    var answer by remember {
+    val df = DecimalFormat("#.####")
+    df.roundingMode = RoundingMode.DOWN
+    var operation = remember {
         mutableStateOf("")
     }
+    var answer = remember {
+        mutableStateOf(0.0)
+    }
+
     Column(
         modifier
             .fillMaxSize()
@@ -97,20 +108,28 @@ fun HomeCalculator(modifier: Modifier, isDark: Boolean, themeUpdated: (bool: Boo
                         .fillMaxHeight(1 / 4f)
                         .fillMaxWidth()
                 ) {
-                    Text(text = "hisham")
+                    Text(
+                        text = df.format(answer.value),
+                        style = MaterialTheme.typography.headlineSmall,
+                        color = buttonMediumDark
+                    )
                 }
                 Row(
                     Modifier
                         .fillMaxHeight(3 / 4f)
                         .fillMaxWidth()
                 ) {
-                    Text(text = answer, textAlign = TextAlign.Right)
+                    Text(
+                        text = operation.value,
+                        style = MaterialTheme.typography.headlineLarge.copy(textAlign = TextAlign.End),
+
+                        )
                 }
             }
             DashBoard(
                 screenWidth = screenWidth,
                 modifier = rowModifier,
-                isDark = isDark
+                isDark = isDark, operation = operation, answer = answer
             )
 
 
@@ -118,75 +137,91 @@ fun HomeCalculator(modifier: Modifier, isDark: Boolean, themeUpdated: (bool: Boo
     }
 }
 
-
 @Composable
 fun DashBoard(
     screenWidth: Dp,
     modifier: Modifier,
-    isDark: Boolean
+    isDark: Boolean,
+    operation: MutableState<String>,
+    answer: MutableState<Double>
 ) {
     Row(
         Modifier
             .fillMaxWidth()
             .height(screenWidth / 4),
+        horizontalArrangement = Arrangement.spacedBy(5.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        MediumButton(
+            number = "AC", isDark = isDark, onClick = {
+                operation.value = ""
+                answer.value = 0.0
+            },
+            Modifier
+                .fillMaxWidth(2 / 4f)
+                .requiredHeight(85.dp)
+        )
+        MediumButton(
+            number = "%",
+            isDark = isDark,
+            onClick = { operation.value = operation.value.plus("%") },
+        )
+        HighButton(
+            number = "÷",
+            isDark = isDark,
+            onClick = { operation.value = operation.value.plus("/") },
+        )
+    }
+    Row(
+        modifier,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        MediumButton(number = "C", isDark = isDark)
+
+        LowButton("7", isDark = isDark, onClick = { operation.value = operation.value.plus("7") })
+        LowButton("8", isDark = isDark, onClick = { operation.value = operation.value.plus("8") })
+        LowButton("9", isDark = isDark, onClick = { operation.value = operation.value.plus("9") })
+        HighButton(
+            number = "×",
+            isDark = isDark,
+            onClick = { operation.value = operation.value.plus("*") })
+    }
+    Row(
+        modifier,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        LowButton("4", isDark = isDark, onClick = { operation.value = operation.value.plus("4") })
+        LowButton("5", isDark = isDark, onClick = { operation.value = operation.value.plus("5") })
+        LowButton("6", isDark = isDark, onClick = { operation.value = operation.value.plus("6") })
+        HighButton(
+            number = "-",
+            isDark = isDark,
+            onClick = { operation.value = operation.value.plus("-") })
+
+    }
+    Row(
+        modifier,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        LowButton("1", isDark = isDark, onClick = { operation.value = operation.value.plus("1") })
+        LowButton("2", isDark = isDark, onClick = { operation.value = operation.value.plus("2") })
+        LowButton("3", isDark = isDark, onClick = { operation.value = operation.value.plus("3") })
+        HighButton(
+            number = "+",
+            isDark = isDark,
+            onClick = { operation.value = operation.value.plus("+") })
+
+    }
+    Row(
+        modifier,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        LowButton(".", isDark = isDark, onClick = { operation.value = operation.value.plus(".") })
+        LowButton("0", isDark = isDark, onClick = { operation.value = operation.value.plus("0") })
         Button(
-            onClick = { /*TODO*/ },
-            shape = RoundedCornerShape(24.dp),
-            modifier = Modifier.requiredSize(90.dp), colors = ButtonDefaults.buttonColors(
-                containerColor = if (isDark) buttonMediumDark else buttonMediumLight
-            )
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.icon),
-                contentDescription = "",
-                tint = if (isDark) textDark else textLight,
-                modifier = Modifier.requiredSize(32.dp)
-            )
-        }
-        MediumButton(number = "%", isDark = isDark)
-        HighButton(number = "÷", isDark = isDark)
-    }
-    Row(
-        modifier,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-
-        LowButton("7", isDark = isDark)
-        LowButton("8", isDark = isDark)
-        LowButton("9", isDark = isDark)
-        HighButton(number = "×", isDark = isDark)
-    }
-    Row(
-        modifier,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        LowButton("4", isDark = isDark)
-        LowButton("5", isDark = isDark)
-        LowButton("6", isDark = isDark)
-        HighButton(number = "-", isDark = isDark)
-
-    }
-    Row(
-        modifier,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        LowButton("1", isDark = isDark)
-        LowButton("2", isDark = isDark)
-        LowButton("3", isDark = isDark)
-        HighButton(number = "+", isDark = isDark)
-
-    }
-    Row(
-        modifier,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        LowButton(".", isDark = isDark)
-        LowButton("0", isDark = isDark)
-        Button(
-            onClick = { /*TODO*/ },
+            onClick = {
+                if (operation.value.isEmpty()) null
+                else operation.value = operation.value.substring(0, operation.value.length - 1)
+            },
             shape = RoundedCornerShape(24.dp),
             modifier = Modifier.requiredSize(90.dp), colors = ButtonDefaults.buttonColors(
                 containerColor = if (isDark) buttonLowDark else buttonLowLight
@@ -199,7 +234,13 @@ fun DashBoard(
                 modifier = Modifier.requiredSize(32.dp)
             )
         }
-        HighButton(number = "=", isDark = isDark)
+        HighButton(number = "=", isDark = isDark, onClick = {
+            try {
+                answer.value = Expression(operation.value).calculate()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        })
     }
 
 }

@@ -22,11 +22,12 @@ import com.example.calculatorapp.ui.theme.textLight
 @Composable
 fun LowButton(
     number: String,
-    isDark: Boolean
+    isDark: Boolean,
+    onClick: () -> Unit
 ) {
     val sizeButton = Modifier.requiredSize(90.dp)
     Button(
-        onClick = { /*TODO*/ },
+        onClick = onClick,
         shape = RoundedCornerShape(24.dp), colors = ButtonDefaults.buttonColors(
             containerColor = if (isDark) buttonLowDark else buttonLowLight,
             contentColor = if (isDark) {
@@ -47,11 +48,11 @@ fun LowButton(
 @Composable
 fun MediumButton(
     number: String,
-    isDark: Boolean
+    isDark: Boolean, onClick: () -> Unit, sizeButton: Modifier = Modifier.requiredSize(90.dp)
 ) {
-    val sizeButton = Modifier.requiredSize(90.dp)
+
     Button(
-        onClick = { /*TODO*/ },
+        onClick = onClick,
         shape = RoundedCornerShape(24.dp), colors = ButtonDefaults.buttonColors(
             containerColor = if (isDark) buttonMediumDark else buttonMediumLight,
             contentColor = if (isDark) {
@@ -72,11 +73,12 @@ fun MediumButton(
 @Composable
 fun HighButton(
     number: String,
-    isDark: Boolean
+    isDark: Boolean, onClick: () -> Unit,
+    sizeButton: Modifier = Modifier.requiredSize(90.dp)
 ) {
-    val sizeButton = Modifier.requiredSize(90.dp)
+
     Button(
-        onClick = { /*TODO*/ },
+        onClick = onClick,
         shape = RoundedCornerShape(24.dp), colors = ButtonDefaults.buttonColors(
             containerColor = if (isDark) buttonHighDark else buttonHighLight,
             contentColor = if (isDark) {
