@@ -12,3 +12,6 @@ Fork the repository.
 Create a new branch for your feature or improvement.
 Make your changes and submit a pull request.
 Provide a detailed description of the changes you've made.
+
+![1694880023254](https://github.com/thisishisham1/Calculator-App/assets/90061011/80d95035-1d53-4838-9c20-fe8f5a6e997c)
+![1694880023258](https://github.com/thisishisham1/Calculator-App/assets/90061011/387d2fe3-fb7c-4ca3-aea0-6ce0c762eedf)
