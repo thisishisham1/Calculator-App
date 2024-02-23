@@ -1,7 +1,6 @@
 package com.example.calculatorapp
 
 import androidx.compose.foundation.layout.requiredSize
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
@@ -18,25 +17,28 @@ import com.example.calculatorapp.ui.theme.buttonMediumLight
 import com.example.calculatorapp.ui.theme.textDark
 import com.example.calculatorapp.ui.theme.textLight
 
-
 @Composable
-fun LowButton(
+fun NumberButton(
     number: String,
     isDark: Boolean,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier.requiredSize(90.dp),
+    buttonType: ButtonType
 ) {
-    val sizeButton = Modifier.requiredSize(90.dp)
+    val (buttonColor, shape) = when (buttonType) {
+        ButtonType.LOW -> if (isDark) buttonLowDark to MaterialTheme.shapes.large else buttonLowLight to MaterialTheme.shapes.large
+        ButtonType.MEDIUM -> if (isDark) buttonMediumDark to MaterialTheme.shapes.large else buttonMediumLight to MaterialTheme.shapes.large
+        ButtonType.HIGH -> if (isDark) buttonHighDark to MaterialTheme.shapes.large else buttonHighLight to MaterialTheme.shapes.large
+    }
+
     Button(
         onClick = onClick,
-        shape = RoundedCornerShape(24.dp), colors = ButtonDefaults.buttonColors(
-            containerColor = if (isDark) buttonLowDark else buttonLowLight,
-            contentColor = if (isDark) {
-                textDark
-            } else {
-                textLight
-            }
+        shape = shape,
+        colors = ButtonDefaults.buttonColors(
+            containerColor = buttonColor,
+            contentColor = if (isDark) textDark else textLight
         ),
-        modifier = sizeButton
+        modifier = modifier
     ) {
         Text(
             text = number,
@@ -45,53 +47,6 @@ fun LowButton(
     }
 }
 
-@Composable
-fun MediumButton(
-    number: String,
-    isDark: Boolean, onClick: () -> Unit, sizeButton: Modifier = Modifier.requiredSize(90.dp)
-) {
-
-    Button(
-        onClick = onClick,
-        shape = RoundedCornerShape(24.dp), colors = ButtonDefaults.buttonColors(
-            containerColor = if (isDark) buttonMediumDark else buttonMediumLight,
-            contentColor = if (isDark) {
-                textDark
-            } else {
-                textLight
-            }
-        ),
-        modifier = sizeButton
-    ) {
-        Text(
-            text = number,
-            style = MaterialTheme.typography.headlineSmall
-        )
-    }
-}
-
-@Composable
-fun HighButton(
-    number: String,
-    isDark: Boolean, onClick: () -> Unit,
-    sizeButton: Modifier = Modifier.requiredSize(90.dp)
-) {
-
-    Button(
-        onClick = onClick,
-        shape = RoundedCornerShape(24.dp), colors = ButtonDefaults.buttonColors(
-            containerColor = if (isDark) buttonHighDark else buttonHighLight,
-            contentColor = if (isDark) {
-                textDark
-            } else {
-                textLight
-            }
-        ),
-        modifier = sizeButton
-    ) {
-        Text(
-            text = number,
-            style = MaterialTheme.typography.headlineSmall
-        )
-    }
+enum class ButtonType {
+    LOW, MEDIUM, HIGH
 }
