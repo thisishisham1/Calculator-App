@@ -8,12 +8,12 @@ class MainViewModel : ViewModel() {
     val operation = mutableStateOf("")
     val answer = mutableStateOf(0.0)
 
-    fun clearOperationAndAnswer() {
+    private fun clearOperationAndAnswer() {
         operation.value = ""
         answer.value = 0.0
     }
 
-    fun calculateAnswer() {
+    private fun calculateAnswer() {
         try {
             answer.value = Expression(operation.value).calculate()
         } catch (e: Exception) {
@@ -21,13 +21,22 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    fun appendToOperation(text: String) {
+    private fun appendToOperation(text: String) {
         operation.value += text
     }
 
-    fun removeLastCharFromOperation() {
+    private fun removeLastCharFromOperation() {
         if (operation.value.isNotEmpty()) {
             operation.value = operation.value.dropLast(1)
+        }
+    }
+
+    fun handleButtonClick(buttonText: String) {
+        when (buttonText) {
+            "AC" -> clearOperationAndAnswer()
+            "←" -> removeLastCharFromOperation()
+            "=" -> calculateAnswer()
+            else -> appendToOperation(buttonText)
         }
     }
 }

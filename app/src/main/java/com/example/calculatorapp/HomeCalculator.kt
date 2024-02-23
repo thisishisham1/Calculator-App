@@ -2,6 +2,7 @@ package com.example.calculatorapp
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.calculatorapp.ui.theme.buttonHighDark
 import com.example.calculatorapp.ui.theme.buttonLowDark
@@ -31,57 +33,62 @@ fun HomeCalculator(isDark: Boolean, themeUpdated: (bool: Boolean) -> Unit) {
     val modifier = Modifier
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp
-    val screenWidth = configuration.screenWidthDp.dp
-    val rowModifier = Modifier
-        .fillMaxWidth()
-        .height(screenWidth / 4)
     Column(
         modifier
             .fillMaxSize()
             .padding(vertical = 8.dp, horizontal = 10.dp)
     ) {
-        // Switch color mode
-        Row(
-            Modifier
-                .fillMaxWidth()
-                .height(screenHeight / 10), horizontalArrangement = Arrangement.Center
-        ) {
-            Switch(
-                checked = isDark,
-                onCheckedChange = themeUpdated,
-                thumbContent = {
-                    if (isDark) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.moon),
-                            contentDescription = "Dark mode",
-                            modifier.requiredSize(20.dp)
-                        )
-                    } else
-                        Icon(
-                            painter = painterResource(id = R.drawable.sun),
-                            contentDescription = "Light mode",
-                            modifier.requiredSize(20.dp)
-                        )
-                }, colors = SwitchDefaults.colors(
-                    uncheckedBorderColor = Color.Transparent,
-                    uncheckedThumbColor = Color.White,
-                    uncheckedTrackColor = buttonMediumLight,
-                    uncheckedIconColor = buttonHighDark,
-                    checkedIconColor = buttonHighDark,
-                    checkedTrackColor = buttonLowDark,
-                )
-            )
-        }
-        //calculator
-        Column(
-            Modifier
-                .fillMaxSize()
-        ) {
-            OperationsAndResult(screenHeight = screenHeight, mainViewModel = vm)
-            DashBoard(
-                isDark = isDark, mainViewModel = vm, modifier = rowModifier
-            )
-        }
+        ColorModeSwitch(isDark = isDark, onThemeUpdated = themeUpdated)
+        CalculatorContent(screenHeight = screenHeight, isDark = isDark, viewModel = vm)
     }
 }
 
+@Composable
+fun ColorModeSwitch(
+    isDark: Boolean,
+    onThemeUpdated: (Boolean) -> Unit
+) {
+    val iconRes = if (isDark) R.drawable.moon else R.drawable.sun
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(IntrinsicSize.Min)
+            .padding(vertical = 8.dp),
+        horizontalArrangement = Arrangement.Center
+    ) {
+        Switch(
+            checked = isDark,
+            onCheckedChange = onThemeUpdated,
+            thumbContent = {
+                Icon(
+                    painter = painterResource(id = iconRes),
+                    contentDescription = if (isDark) "Dark mode" else "Light mode",
+                    modifier = Modifier.requiredSize(20.dp)
+                )
+            },
+            colors = SwitchDefaults.colors(
+                uncheckedBorderColor = Color.Transparent,
+                uncheckedThumbColor = Color.White,
+                uncheckedTrackColor = buttonMediumLight,
+                uncheckedIconColor = buttonHighDark,
+                checkedIconColor = buttonHighDark,
+                checkedTrackColor = buttonLowDark,
+            )
+        )
+    }
+}
+
+@Composable
+fun CalculatorContent(
+    screenHeight: Dp,
+    isDark: Boolean,
+    viewModel: MainViewModel
+) {
+    Column(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        OperationsAndResult(screenHeight = screenHeight, mainViewModel = viewModel)
+        DashBoard(isDark = isDark, mainViewModel = viewModel)
+    }
+}

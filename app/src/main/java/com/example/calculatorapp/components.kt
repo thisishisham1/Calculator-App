@@ -6,8 +6,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -20,12 +20,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.example.calculatorapp.ui.theme.buttonHighDark
+import com.example.calculatorapp.ui.theme.buttonHighLight
 import com.example.calculatorapp.ui.theme.buttonLowDark
 import com.example.calculatorapp.ui.theme.buttonLowLight
 import com.example.calculatorapp.ui.theme.buttonMediumDark
+import com.example.calculatorapp.ui.theme.buttonMediumLight
 import com.example.calculatorapp.ui.theme.textDark
 import com.example.calculatorapp.ui.theme.textLight
-import org.mariuszgromada.math.mxparser.Expression
 import java.math.RoundingMode
 import java.text.DecimalFormat
 
@@ -68,9 +70,9 @@ fun OperationsAndResult(
     }
 }
 
+
 @Composable
 fun DashBoard(
-    modifier: Modifier,
     isDark: Boolean,
     mainViewModel: MainViewModel
 ) {
@@ -81,175 +83,77 @@ fun DashBoard(
         listOf("1", "2", "3", "+"),
         listOf(".", "0", "←", "=")
     )
-    Row(
-        modifier,
-        horizontalArrangement = Arrangement.spacedBy(5.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        NumberButton(
-            number = "AC",
-            isDark = isDark,
+    buttons.forEach { rows ->
+        Row(
             modifier = Modifier
-                .weight(1f)
-                .height(90.dp),
-            onClick = {
-                mainViewModel.operation.value = ""
-                mainViewModel.answer.value = 0.0
-            },
-            buttonType = ButtonType.MEDIUM
-
-        )
-        NumberButton(
-            number = "÷",
-            isDark = isDark,
-            onClick = { mainViewModel.operation.value = mainViewModel.operation.value.plus("/") },
-            buttonType = ButtonType.HIGH
-        )
-    }
-    Row(
-        modifier,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-
-        NumberButton(
-            "7",
-            isDark = isDark,
-            onClick = { mainViewModel.operation.value = mainViewModel.operation.value.plus("7") },
-            buttonType = ButtonType.LOW
-        )
-        NumberButton(
-            "8",
-            isDark = isDark,
-            onClick = { mainViewModel.operation.value = mainViewModel.operation.value.plus("8") },
-            buttonType = ButtonType.LOW
-        )
-        NumberButton(
-            "9",
-            isDark = isDark,
-            onClick = { mainViewModel.operation.value = mainViewModel.operation.value.plus("9") },
-            buttonType = ButtonType.LOW
-        )
-        NumberButton(
-            number = "×",
-            isDark = isDark,
-            onClick = { mainViewModel.operation.value = mainViewModel.operation.value.plus("*") },
-            buttonType = ButtonType.HIGH
-        )
-    }
-    Row(
-        modifier,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        NumberButton(
-            "4",
-            isDark = isDark,
-            onClick = { mainViewModel.operation.value = mainViewModel.operation.value.plus("4") },
-            buttonType = ButtonType.LOW
-        )
-        NumberButton(
-            "5",
-            isDark = isDark,
-            onClick = { mainViewModel.operation.value = mainViewModel.operation.value.plus("5") },
-            buttonType = ButtonType.LOW
-        )
-        NumberButton(
-            "6",
-            isDark = isDark,
-            onClick = { mainViewModel.operation.value = mainViewModel.operation.value.plus("6") },
-            buttonType = ButtonType.LOW
-        )
-        NumberButton(
-            number = "-",
-            isDark = isDark,
-            onClick = { mainViewModel.operation.value = mainViewModel.operation.value.plus("-") },
-            buttonType = ButtonType.HIGH
-        )
-
-    }
-    Row(
-        modifier,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        NumberButton(
-            "1",
-            isDark = isDark,
-            onClick = { mainViewModel.operation.value = mainViewModel.operation.value.plus("1") },
-            buttonType = ButtonType.LOW
-        )
-        NumberButton(
-            "2",
-            isDark = isDark,
-            onClick = { mainViewModel.operation.value = mainViewModel.operation.value.plus("2") },
-            buttonType = ButtonType.LOW
-        )
-        NumberButton(
-            "3",
-            isDark = isDark,
-            onClick = { mainViewModel.operation.value = mainViewModel.operation.value.plus("3") },
-            buttonType = ButtonType.LOW
-        )
-        NumberButton(
-            number = "+",
-            isDark = isDark,
-            onClick = { mainViewModel.operation.value = mainViewModel.operation.value.plus("+") },
-            buttonType = ButtonType.HIGH
-        )
-
-    }
-    Row(
-        modifier,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        NumberButton(
-            ".",
-            isDark = isDark,
-            onClick = { mainViewModel.operation.value = mainViewModel.operation.value.plus(".") },
-            buttonType = ButtonType.LOW
-        )
-        NumberButton(
-            "0",
-            isDark = isDark,
-            onClick = { mainViewModel.operation.value = mainViewModel.operation.value.plus("0") },
-            buttonType = ButtonType.LOW
-        )
-        Button(
-            onClick = {
-                if (mainViewModel.operation.value.isEmpty()) null
-                else mainViewModel.operation.value =
-                    mainViewModel.operation.value.substring(
-                        0,
-                        mainViewModel.operation.value.length - 1
-                    )
-            },
-            shape = RoundedCornerShape(24.dp),
-            modifier = Modifier.requiredSize(90.dp), colors = ButtonDefaults.buttonColors(
-                containerColor = if (isDark) buttonLowDark else buttonLowLight
-            )
+                .fillMaxWidth()
+                .padding(vertical = 5.dp),
+            horizontalArrangement = Arrangement.spacedBy(5.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
+            rows.forEach { buttonText ->
+                when (buttonText) {
+                    "AC" -> NumberButton(
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(90.dp),
+                        number = buttonText,
+                        isDark = isDark,
+                        onClick = { mainViewModel.handleButtonClick(buttonText) },
+                        buttonType = ButtonType.MEDIUM
+                    )
+
+                    else -> NumberButton(
+                        modifier = Modifier.requiredSize(90.dp),
+                        number = buttonText,
+                        isDark = isDark,
+                        onClick = { mainViewModel.handleButtonClick(buttonText) },
+                        buttonType = when (buttonText) {
+                            "×", "-", "+", "=", "÷" -> ButtonType.HIGH
+                            else -> ButtonType.LOW
+                        }
+                    )
+                }
+
+            }
+        }
+    }
+}
+
+@Composable
+fun NumberButton(
+    number: String,
+    isDark: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    buttonType: ButtonType
+) {
+    val (buttonColor, shape) = when (buttonType) {
+        ButtonType.LOW -> if (isDark) buttonLowDark to MaterialTheme.shapes.large else buttonLowLight to MaterialTheme.shapes.large
+        ButtonType.MEDIUM -> if (isDark) buttonMediumDark to MaterialTheme.shapes.large else buttonMediumLight to MaterialTheme.shapes.large
+        ButtonType.HIGH -> if (isDark) buttonHighDark to MaterialTheme.shapes.large else buttonHighLight to MaterialTheme.shapes.large
+    }
+
+    Button(
+        onClick = onClick,
+        shape = shape,
+        colors = ButtonDefaults.buttonColors(
+            containerColor = buttonColor,
+            contentColor = if (isDark) textDark else textLight
+        ),
+        modifier = modifier
+    ) {
+        if (number == "←") {
             Icon(
                 painter = painterResource(id = R.drawable.union),
                 contentDescription = "",
                 tint = if (isDark) textDark else textLight,
                 modifier = Modifier.requiredSize(32.dp)
             )
-        }
-        NumberButton(number = "=", isDark = isDark, onClick = {
-            try {
-                mainViewModel.answer.value = Expression(mainViewModel.operation.value).calculate()
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }, buttonType = ButtonType.HIGH)
-    }
-
-}
-
-
-private fun handleButtonClick(buttonText: String, mainViewModel: MainViewModel) {
-    when (buttonText) {
-        "AC" -> mainViewModel.clearOperationAndAnswer()
-        "←" -> mainViewModel.removeLastCharFromOperation()
-        "=" -> mainViewModel.calculateAnswer()
-        else -> mainViewModel.appendToOperation(buttonText)
+        } else
+            Text(
+                text = number,
+                style = MaterialTheme.typography.headlineSmall
+            )
     }
 }
