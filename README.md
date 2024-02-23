@@ -12,7 +12,8 @@ This is a simple calculator app built using Jetpack Compose, a modern toolkit fo
 
 ## Screenshots
 
-[Insert screenshots or GIFs of your app here]
+![Alt text](screen shots/Light.png)
+![Alt text](screen shots/Dark.png)
 
 ## Setup
 
